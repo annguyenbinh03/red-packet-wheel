@@ -1,0 +1,21 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /lucky-draw/api/v1
+spring:
+  datasource:
+    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/lucky_draw}
+    username: ${DBMS_USERNAME:root}
+    password: ${DBMS_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+jwt:
+  signerKey: ${SIGNER_KEY:4/Wrj3qrBDmLcpEfv87WAt3K5EyQ1fpRC1hndgyOiLo/3ak/oTziyJzrEA2DDP1d}
+  valid-duration: 36000 #in second
+  refreshable-duration:  144000 # in second
+api:
+  version: v1
+  server:
+    url: http://localhost:8080/lucky-draw/api/v1
