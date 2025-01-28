@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import bgImage from "../assets/image/bg.png";
+
+import useAuth from "../hooks/useAuth";
+import { saveHistory } from "../services/history";
+import { getSpinCount } from "../services/user";
+import formatVND from "../utils/formatVND"
 // import WheelComponent from "react-wheel-of-prizes";
 
 // import "react-wheel-of-prizes/dist/index.css";
@@ -88,6 +92,7 @@ export default function Game() {
     },
   ];
 
+  const { auth } = useAuth();
   // state component
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
@@ -95,7 +100,7 @@ export default function Game() {
   const [showPrize, setShowPrize] = useState("");
   const [modalPrize, setModalPrize] = useState(false);
 
-  const [spinCount, setSpinCount] = useState(3);
+  const [spinCount, setSpinCount] = useState(0);
   const [totalPrize, setTotalPrize] = useState(0);
   // logic
   /**
@@ -107,6 +112,29 @@ export default function Game() {
      */
 
   // func random audio
+
+  useEffect(() => {
+    fetchSpinCount();
+  }, []);
+
+  const fetchSpinCount = async () => {
+    try {
+      const response = await getSpinCount(auth.storagedToken);
+      setSpinCount(response.result.spin);
+      setTotalPrize(response.result.money);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const saveHistoryInfo = async (currentSpinCount, amount) => {
+    try {
+      await saveHistory(auth.storagedToken, currentSpinCount, amount);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const randomAudio = () => {
     const arrAudio = audioxoso;
     return arrAudio;
@@ -122,36 +150,44 @@ export default function Game() {
     }
   };
 
-  const playMusicFromPrize = () => {
+  const handleAddAmount = (currentSpinCount) => {
     if (prizeNumber === 0) {
       // 10000
       setTotalPrize(totalPrize + 10000);
+      saveHistoryInfo(currentSpinCount, 10000);
     } else if (prizeNumber === 1) {
       // 5 000
       setTotalPrize(totalPrize + 5000);
+      saveHistoryInfo(currentSpinCount, 5000);
     } else if (prizeNumber === 2) {
       // 1 000
       //updateAudio()
       setTotalPrize(totalPrize + 1000);
+      saveHistoryInfo(currentSpinCount, 1000);
     } else if (prizeNumber === 3) {
       //20 000
       //updateAudio()
       setTotalPrize(totalPrize + 20000);
+      saveHistoryInfo(currentSpinCount, 20000);
     } else if (prizeNumber === 4) {
       // 2 000
       //updateAudio()
       setTotalPrize(totalPrize + 2000);
+      saveHistoryInfo(currentSpinCount, 2000);
     } else if (prizeNumber === 5) {
       // 3500
       //updateAudio()
       setTotalPrize(totalPrize + 3500);
+      saveHistoryInfo(currentSpinCount, 3500);
     } else if (prizeNumber === 6) {
       // 15 000
       //updateAudio()
       setTotalPrize(totalPrize + 15000);
+      saveHistoryInfo(currentSpinCount, 15000);
     } else if (prizeNumber === 7) {
       // 0
       //updateAudio()
+      saveHistoryInfo(currentSpinCount, 0);
     }
   };
 
@@ -172,8 +208,12 @@ export default function Game() {
     setMustSpin(false);
     ref.current.pause();
     setModalPrize(true);
-    playMusicFromPrize();
-    setSpinCount(spinCount - 1);
+
+    setSpinCount((prevSpinCount) => {
+      handleAddAmount(prevSpinCount); 
+      return prevSpinCount - 1; 
+    });
+
     setShowPrize(data[prizeNumber].option);
   };
 
@@ -209,51 +249,57 @@ export default function Game() {
       <div className="game_content">
         {/* lucky wheel */}
 
-        <div
-          style={{ color: "white", textAlign: "center", marginBottom: "3rem" }}
-        >
-          <div className="game_spin_count">Số lượt quay: {spinCount}</div>
-          <div className="game_total_prize">{totalPrize} vnd</div>
-        </div>
+        {spinCount < 4 ? (
+          <div
+            style={{
+              color: "white",
+              textAlign: "center",
+              marginBottom: "3rem",
+            }}
+          >
+            <div className="game_spin_count">Số lượt quay: {spinCount}</div>
+            <div className="game_total_prize">{formatVND(totalPrize)}</div>
 
-        {spinCount > 0 ? (
-          <>
-            <Wheel
-              mustStartSpinning={mustSpin}
-              prizeNumber={prizeNumber}
-              data={data}
-              onStopSpinning={handleSpinStop}
-              outerBorderColor="black"
-              outerBorderWidth={4}
-              innerBorderColor="#4E5452"
-              innerBorderWidth={5}
-              radiusLineColor="#4E5452"
-              radiusLineWidth={1}
-            />
+            {spinCount > 0 ? (
+              <>
+                <Wheel
+                  mustStartSpinning={mustSpin}
+                  prizeNumber={prizeNumber}
+                  data={data}
+                  onStopSpinning={handleSpinStop}
+                  outerBorderColor="black"
+                  outerBorderWidth={4}
+                  innerBorderColor="#4E5452"
+                  innerBorderWidth={5}
+                  radiusLineColor="#4E5452"
+                  radiusLineWidth={1}
+                />
 
-            {/* lucky wheel spin */}
-
-            <motion.button
-              variants={buttonMotion}
-              whileHover="hover"
-              className="game_content_spin"
-              onClick={handleSpinClick}
-            >
-              Quay thưởng
-            </motion.button>
-          </>
-        ) : (
-
-          <div>
-                        <motion.button
-              variants={buttonMotion}
-              whileHover="hover"
-              className="game_content_spin"
-              onClick={goToInfomation}
-            >
-              Nhận thưởng
-            </motion.button>
+                {/* lucky wheel spin */}
+                <motion.button
+                  variants={buttonMotion}
+                  whileHover="hover"
+                  className="game_content_spin"
+                  onClick={handleSpinClick}
+                >
+                  Quay thưởng
+                </motion.button>
+              </>
+            ) : (
+              <div>
+                <motion.button
+                  variants={buttonMotion}
+                  whileHover="hover"
+                  className="game_content_spin"
+                  onClick={goToInfomation}
+                >
+                  Nhận thưởng
+                </motion.button>
+              </div>
+            )}
           </div>
+        ) : (
+          <div>Loading ....</div>
         )}
       </div>
       {/* when spin stop => show prize component */}

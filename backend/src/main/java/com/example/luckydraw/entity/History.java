@@ -27,8 +27,8 @@ public class History {
     @Column(name = "spin_count")
     private Integer spinCount;
 
-    @Column(name = "spin")
-    private Integer spin;
+    @Column(name = "amount")
+    private Integer amount;
 
     @Column(name = "at")
     private Timestamp at;

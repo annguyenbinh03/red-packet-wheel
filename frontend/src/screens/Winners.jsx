@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // import bg image
-import bgImage from "../assets/image/bg.png";
+import bgImage from "../assets/image/bg.webp";
 
 // import componnets
 

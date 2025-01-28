@@ -1,7 +1,9 @@
 package com.example.luckydraw.controller;
 
+import com.example.luckydraw.dto.request.BankingRequest;
 import com.example.luckydraw.dto.request.UserCreationRequest;
 import com.example.luckydraw.dto.response.ApiResponse;
+import com.example.luckydraw.dto.response.SpinAndMoneyResponse;
 import com.example.luckydraw.dto.response.UserResponse;
 import com.example.luckydraw.service.UserService;
 import jakarta.validation.Valid;
@@ -26,10 +28,31 @@ public class UserController {
                 .build();
     }
 
+    @PostMapping("/save-bank")
+    public ApiResponse<UserResponse> saveBankInfo(@RequestBody BankingRequest request) {
+        userService.saveBankInfo(request);
+        return ApiResponse.<UserResponse>builder()
+                .build();
+    }
+
     @GetMapping("/info/my-info")
     public ApiResponse<UserResponse> getUserInfo() {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.getMyInfo())
+                .build();
+    }
+
+    @GetMapping("/info/spin-count")
+    public ApiResponse<SpinAndMoneyResponse> getSpinCount() {
+        return ApiResponse.<SpinAndMoneyResponse>builder()
+                .result(userService.getSpinCount())
+                .build();
+    }
+
+    @GetMapping("/info/full-name")
+    public ApiResponse<String> getUserFullName() {
+        return ApiResponse.<String>builder()
+                .result(userService.getName())
                 .build();
     }
 

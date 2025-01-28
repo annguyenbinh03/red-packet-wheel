@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 // import bg image
 
-import bgImage from "../assets/image/bg.png";
+import bgImage from "../assets/image/bg.webp";
 
 // import motion
 
@@ -16,6 +16,11 @@ import Thanks from "../components/Thanks";
 
 // import axios
 import axios from "axios";
+
+import { getFullName, saveBankInfo } from "../services/user";
+import {getLeaderboards} from "../services/leaderboard"
+import useAuth from "../hooks/useAuth";
+import { Bounce, toast } from "react-toastify";
 
 // setting motion container and child
 const boxForm = {
@@ -60,18 +65,86 @@ export default function Infomation() {
 
   const [error, setError] = useState("");
 
+  const { auth } = useAuth();
+
   useEffect(() => {
-    axios
-      .get("https://2023-server.vercel.app/prize/all")
-      .then((res) => setDataPrize(res.data));
+    fetchFullName();
+    fetchLeaderboards();
   }, []);
+
+  const fetchLeaderboards = async () => {
+    try {
+      const response = await getLeaderboards(auth.storagedToken);
+      setDataPrize(response.result);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const fetchFullName = async () => {
+    try {
+      const response = await getFullName(auth.storagedToken);
+      setName(response.result);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   // handle submit form
 
   const submit = async () => {
-    // setup data => send server
-    // condition miss infomation
-    // call api with method post to send data to server
+    if(accountNumber === ""){
+      toast.error('Số tài khoản nhận thưởng không được để trống', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+        });
+        return;
+    }
+
+    if(paymentMethod === null || paymentMethod === ""){
+      toast.error('Phương thức thanh toán không được để trống', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+        });
+        return;
+    }
+
+    if(paymentMethod === "banking" && bank === "" ){
+      toast.error('Tên ngân hàng không được bỏ trống', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+        });
+        return;
+    }
+
+    try {
+      const response = await saveBankInfo(auth.storagedToken, paymentMethod, bank, accountNumber);
+      setName(response.result);
+      setShowThanks(true);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   // func close thanks component
@@ -121,7 +194,7 @@ export default function Infomation() {
 
           <div className="infomation_form_group">
             <label>Tên của bạn</label>
-            <input placeholder="ex: Tuấn" name="name" value={name} disabled />
+            <input style={{background:"#c8c8c8", color:"white"}} placeholder="ex: Tuấn" name="name" value={name} disabled />
           </div>
           {/* form ground sex */}
 
@@ -152,7 +225,10 @@ export default function Infomation() {
             </div>
           ) : (
             <div>
-              <div className="infomation_form_group" style={{marginBottom:"10px"}}>
+              <div
+                className="infomation_form_group"
+                style={{ marginBottom: "10px" }}
+              >
                 <label>Tên ngân hàng</label>
                 <input
                   placeholder="ex: Agribank"
@@ -167,7 +243,7 @@ export default function Infomation() {
                   placeholder="123483924"
                   type="tel"
                   name="sotaikhoan"
-                  onChange={() => handleChangeAccountNumber}
+                  onChange={handleChangeAccountNumber}
                   value={accountNumber}
                 />
               </div>
@@ -227,8 +303,12 @@ export default function Infomation() {
             .map((item, index) => (
               <div className="infomation_winner_user" key={item.id}>
                 <p>{index + 1}</p>
-                <p>{item.name}</p>
-                <p>{item.prize}</p>
+                <p>
+                  <img src={item.image} width={"50px"} style={{marginRight:"5px", borderRadius:"50%"}}/>
+                  {item.fullName}
+                  </p>
+                {/* <p>{item.fullName}</p> */}
+                <p>{item.totalAmount}</p>
               </div>
             ))}
           <Link className="infomation_winner_all" to="/winner">
