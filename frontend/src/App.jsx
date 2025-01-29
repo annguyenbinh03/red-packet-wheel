@@ -7,6 +7,7 @@ import Login from "./pages/Login.jsx";
 import Admin from "./pages/Admin.jsx";
 import RequireAuth from "./components/RequireAuth.jsx";
 import { ToastContainer } from 'react-toastify';
+import AdminPay from "./pages/AdminPay.jsx";
 
 const Winners = lazy(() => import("./screens/Winners"));
 const Game = lazy(() => import("./screens/Game"));
@@ -38,6 +39,7 @@ function App() {
 
             <Route element={<RequireAuth allowedRoles={[ROLES.ADMIN]} />}>
               <Route path="admin" element={<Admin />} />
+              <Route path="admin-pay" element={<AdminPay />} />
             </Route>
 
             <Route path="*" element={<Missing />} />

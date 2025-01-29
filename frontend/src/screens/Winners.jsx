@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-
+import "bootstrap/dist/css/bootstrap.min.css";
 // import motion
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -7,10 +7,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import bgImage from "../assets/image/bg.webp";
 
 // import componnets
+import useAuth from "../hooks/useAuth";
 
+import { getLeaderboards } from "../services/leaderboard";
 
-// import axios lib
-import axios from "axios";
+import formatVND from "../utils/formatVND"
 
 // set motion
 
@@ -40,52 +41,30 @@ const child = {
 };
 
 export default function Winners() {
-  const ref = useRef();
-
   // state component
-
-  const [face, setFace] = useState("");
-  const [funnyModal, setFunnyModal] = useState(false);
   const [dataUser, setDataUser] = useState([]);
-  const [page, setPage] = useState(2);
 
   // call api get all prize
 
+  const { auth } = useAuth();
+
   useEffect(() => {
-    axios
-      .get("https://2023-server.vercel.app/prize/all")
-      .then((res) => setDataUser(res.data))
-      .catch((err) => console.error(err));
+    fetchLeaderboards();
   }, []);
 
   // button more
 
-  const moreData = () => {
-    setPage((prev) => prev + 1);
+  const fetchLeaderboards = async () => {
+    try {
+      const response = await getLeaderboards(auth.storagedToken);
 
-    async function fetch() {
-      await axios
-        .get(`https://2023-server.vercel.app/prize/all?page=${page}`)
-        .then((res) => setDataUser((prev) => [...prev, ...res.data]));
+      const testData = [...response.result, ...response.result, ...response.result, ...response.result, ...response.result];
+      setDataUser(testData);
+    } catch (error) {
+      console.log(error);
     }
-
-    fetch();
   };
-
-  // function goTo facebook
-
-  const goFace = (e) => {
-    const parent = e.target.parentElement;
-    const linkFace = parent.querySelector("span").innerHTML;
-    setFace(linkFace);
-    setFunnyModal(true);
-  };
-
   // func close funny modal
-
-  const closeFunnyModal = (value) => {
-    setFunnyModal(value);
-  };
 
   return (
     <AnimatePresence>
@@ -100,80 +79,60 @@ export default function Winners() {
         <img src={bgImage} className="winner_img" />
         {/* content */}
 
-        <div className="winner_context">
-          <h1>Danh sách trúng thưởng</h1>
-
-          {/* tags */}
-          <div className="winner_context_tags">
-            <p>No.</p>
-            <p>Tên</p>
-            <p>Facebook</p>
-            <p>Giới tính</p>
-            <p>Phần thưởng</p>
-          </div>
-
-          {/* list prize */}
-
-          <div className="winner_context_list">
-            {/* render data  => width large and medium default :true*/}
-
-            {dataUser.map((item, index) => (
-              <motion.div
-                className="winner_context_item"
-                key={item.id}
-                variants={child}
-              >
-                <p>{index + 1}</p>
-                <p>{item.name}</p>
-                <p className="face" ref={ref}>
-                  <span>{item.linkFace}</span>
-                  <button onClick={goFace}>Facebook</button>
-                </p>
-                <p>{item.sex}</p>
-                <p>{item.prize}</p>
-              </motion.div>
-            ))}
-
-            {/* render data => width small */}
-            {dataUser.map((item, index) => (
-              <motion.div
-                className="winner_context_item_sm"
-                key={item.id}
-                variants={child}
-              >
-                <div className="winner_context_item_sm_group">
-                  <p>No.</p>
-                  <p>{index + 1}</p>
-                </div>
-                <div className="winner_context_item_sm_group">
-                  <p>Tên</p>
-                  <p>{item.name}</p>
-                </div>
-                <div className="winner_context_item_sm_group">
-                  <p>Link face</p>
-                  <p className="winner_context_item_sm_group_face">
-                    <span>{item.linkFace}</span>
-                    <button onClick={goFace}>Facebook</button>
-                  </p>
-                </div>
-                <div className="winner_context_item_sm_group">
-                  <p>Giới tính</p>
-                  <p>{item.sex}</p>
-                </div>
-                <div className="winner_context_item_sm_group">
-                  <p>Phần thưởng</p>
-                  <p>{item.prize}</p>
-                </div>
-              </motion.div>
-            ))}
-            <button
-              onClick={moreData}
+        <div className="container py-4 mt-5 rounded">
+          <div className="winner_context">
+            <h1
+              className="fs-1"
               style={{
-                display: dataUser.length < (page - 1) * 5 ? "none" : "block",
+                color: "white",
+                fontWeight: "bold",
+                textAlign: "center",
               }}
             >
-              xem Them
-            </button>
+              Danh sách trúng thưởng
+            </h1>
+            <table class="table mt-5 text-white">
+              <thead className="text-center table-dark">
+                <tr>
+                  <th className="py-3 " scope="col">
+                    #
+                  </th>
+                  <th className="py-3 " scope="col">
+                    Tên
+                  </th>
+                  <th className="py-3 " scope="col">
+                    Giải thưởng
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {dataUser?.map((item, index) => {
+                  return (
+                    <tr className="m-0">
+                      <th
+                        scope="row"
+                        style={{ textAlign: "center", verticalAlign: "middle" }}
+                      >
+                        {index + 1}
+                      </th>
+                      <td>
+                        <img
+                          src={item.image}
+                          width={"40px"}
+                          style={{ marginRight: "10px", borderRadius: "50%" }}
+                        />
+                        {item.fullName}
+                      </td>
+                      <td
+                        style={{ textAlign: "center", verticalAlign: "middle" }}
+                      >
+                        { formatVND(item.totalAmount)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       </motion.div>

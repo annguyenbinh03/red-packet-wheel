@@ -13,8 +13,8 @@ spring:
     show-sql: true
 jwt:
   signerKey: ${SIGNER_KEY:7/Yxq7uqBCDmMpVJgh93TAt9M7FyP2hpRC3kndtzUiLp/5bk/pUziyLzrFA3EEQ2f}
-  valid-duration: 36000 #in second
-  refreshable-duration:  144000 # in second
+  valid-duration: 259200 #in second
+  refreshable-duration:  777600 # in second
 api:
   version: v1
   server:

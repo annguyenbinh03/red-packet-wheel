@@ -12,8 +12,13 @@ import lombok.experimental.FieldDefaults;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class SpinAndMoneyResponse {
-    Integer spin;
-    Integer money;
-    boolean isSubmitted;
+public class PaymentResponse {
+    String username;
+    String fullName;
+    String paymentMethod;
+    String accountNumber;
+    String bank;
+    Boolean isSubmit;
+    Boolean isReceived;
+    Integer totalAmount;
 }

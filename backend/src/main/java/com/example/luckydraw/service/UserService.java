@@ -2,6 +2,7 @@ package com.example.luckydraw.service;
 
 import com.example.luckydraw.dto.request.BankingRequest;
 import com.example.luckydraw.dto.request.UserCreationRequest;
+import com.example.luckydraw.dto.response.PaymentResponse;
 import com.example.luckydraw.dto.response.RoleResponse;
 import com.example.luckydraw.dto.response.SpinAndMoneyResponse;
 import com.example.luckydraw.dto.response.UserResponse;
@@ -62,7 +63,15 @@ public class UserService {
         user.setPaymentMethod(request.getPaymentMethod());
         user.setBank(request.getBank());
         user.setAccountNumber(request.getAccountNumber());
-        user.setIsSubmit(true); 
+        user.setIsSubmit(true);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void setReceivedMoney(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        user.setIsReceived(true);
         userRepository.save(user);
     }
 
@@ -85,7 +94,7 @@ public class UserService {
     public String getName() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        return user.getUsername();
+        return user.getFullName();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -102,11 +111,19 @@ public class UserService {
         return userResponses;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<PaymentResponse> getAllPaymentInfo() {
+        List<PaymentResponse> responses = userRepository.getAllPaymentInfo();
+        if (responses.isEmpty())
+            throw new AppException(ErrorCode.USER_LIST_EMPTY);
+        return responses;
+    }
+
     public SpinAndMoneyResponse getSpinCount(){
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         Integer totalMoney = findTotalPrizedMoney(user);
-        SpinAndMoneyResponse response = new SpinAndMoneyResponse(user.getSpinCount(), totalMoney);
+        SpinAndMoneyResponse response = new SpinAndMoneyResponse(user.getSpinCount(), totalMoney, user.getIsSubmit());
         return response;
     }
     public Integer findTotalPrizedMoney(User user) {

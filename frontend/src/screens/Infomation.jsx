@@ -150,6 +150,7 @@ export default function Infomation() {
   // func close thanks component
   const closeThanks = (value) => {
     setShowThanks(value);
+    navigate("/winner");
   };
 
   // func navigate winner page

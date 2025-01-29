@@ -1,8 +1,10 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { motion } from "framer-motion";
 import Loading from "./Loading";
 import useAuth from "../hooks/useAuth";
+
+import { getFullName } from "../services/user";
 
 const navContainer = {
   hide: {
@@ -53,8 +55,22 @@ const logoMotion = {
 };
 
 export default function Navigation() {
+  const [name, setName] = useState("");
 
   const { auth } = useAuth();
+  const fetchFullName = async () => {
+    try {
+      const response = await getFullName(auth.storagedToken);
+      setName(response.result);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    fetchFullName();
+  }, []);
+
   return (
     <div className="nav">
       <motion.div
@@ -64,7 +80,7 @@ export default function Navigation() {
         animate="visible"
       >
         <div className="nav_container_logo">
-          <Link to="/">Xin chào bạn {auth.username} </Link>
+          <Link to="/">Xin chào {name} </Link>
         </div>
       </motion.div>
       <Suspense fallback={<Loading />}>

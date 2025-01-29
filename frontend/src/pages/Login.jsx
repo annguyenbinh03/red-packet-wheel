@@ -31,8 +31,8 @@ const Login = () => {
 
   const searchParams = new URLSearchParams(location.search);
 
-  const username = searchParams.get("username");
-  const password = searchParams.get("password");
+  const username = searchParams.get("nvme");
+  const password = searchParams.get("deepseek");
 
   const handleLogin = async () => {
     try {
@@ -44,7 +44,7 @@ const Login = () => {
       const scopeArray = decoded.scope.split(" ");
       const roles = getRoles(scopeArray);
       const authorities = getAuthorities(scopeArray);
-      setAuth({ username, roles, authorities, token });
+      setAuth({ username, roles, authorities, storagedToken: token });
       if (roles.includes("ROLE_ADMIN")) navigate("/admin", { replace: true });
       else navigate("/", { replace: true });
     } catch (e) {

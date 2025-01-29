@@ -9,6 +9,8 @@ import { BsCheck } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 // motion init
 
+
+
 const container = {
   hide: {
     opacity: 0,
@@ -78,7 +80,6 @@ export default function FireWork() {
 
   useEffect(() => {
     // querry canvas
-
     const canvas = document.querySelector("canvas");
 
     // resize canvas
@@ -206,19 +207,19 @@ export default function FireWork() {
   setTimeout(() => {
     setShowTouchScreen(false);
     setTimeShowText(true);
-  }, 8000);
+  }, 6000);
 
   setTimeout(() => {
     setShowModalGame(true);
-  }, 15000);
+  }, 13000);
 
   setTimeout(() => {
     setShowModalGame(true);
-  }, 25000);
+  }, 20000);
 
   setTimeout(() => {
     setShowModalGame(true);
-  }, 40000);
+  }, 30000);
 
   // modal box small showing when watching video
 

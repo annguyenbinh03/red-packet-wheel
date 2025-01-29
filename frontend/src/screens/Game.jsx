@@ -12,12 +12,9 @@ import formatVND from "../utils/formatVND"
 import { Wheel } from "react-custom-roulette";
 
 // import audio
-import audioOf3 from "../assets/audio/a3.mp3";
 import audioxoso from "../assets/audio/xoso.mp3";
-import audiocainit from "../assets/audio/cainit.mp3";
-import audiocartoon from "../assets/audio/cartoon.mp3";
-import audiovit from "../assets/audio/vit.mp3";
 import Prize from "../components/Prize";
+import Loading from "../components/Loading";
 
 const buttonMotion = {
   hover: {
@@ -92,7 +89,7 @@ export default function Game() {
     },
   ];
 
-  const { auth } = useAuth();
+  const { auth, loading } = useAuth();
   // state component
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
@@ -102,6 +99,7 @@ export default function Game() {
 
   const [spinCount, setSpinCount] = useState(0);
   const [totalPrize, setTotalPrize] = useState(0);
+  const [isSubmit, setIsSubmit] = useState(true);
   // logic
   /**
      
@@ -228,6 +226,14 @@ export default function Game() {
     navigate("/infomation");
   };
 
+  const goToLeaderboard = () => {
+    navigate("/winner");
+  };
+
+  if(loading){
+    return <Loading/>
+  }
+
   return (
     // container game page
     <motion.div
@@ -286,16 +292,30 @@ export default function Game() {
                 </motion.button>
               </>
             ) : (
-              <div>
-                <motion.button
-                  variants={buttonMotion}
-                  whileHover="hover"
-                  className="game_content_spin"
-                  onClick={goToInfomation}
-                >
-                  Nhận thưởng
-                </motion.button>
-              </div>
+                isSubmit ? (
+                  <div>
+                  <motion.button
+                    variants={buttonMotion}
+                    whileHover="hover"
+                    className="game_content_spin"
+                    onClick={goToInfomation}
+                  >
+                    Nhận thưởng
+                  </motion.button>
+                </div>
+                ) : (
+                  <div>
+                  <motion.button
+                    variants={buttonMotion}
+                    whileHover="hover"
+                    className="game_content_spin"
+                    onClick={goToLeaderboard}
+                  >
+                    Xem danh sách trúng thưởng
+                  </motion.button>
+                </div>
+                )         
+           
             )}
           </div>
         ) : (

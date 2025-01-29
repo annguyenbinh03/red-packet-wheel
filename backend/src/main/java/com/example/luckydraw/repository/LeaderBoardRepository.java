@@ -12,6 +12,7 @@ import java.util.List;
 public interface LeaderBoardRepository extends JpaRepository<LeaderBoard, Integer> {
     @Query("SELECT new com.example.luckydraw.dto.response.LeaderBoardResponse(u.id, u.fullName, u.image, lb.totalAmount) " +
             " FROM User u, LeaderBoard lb " +
-            " WHERE lb.user = u")
+            " WHERE lb.user = u " +
+            " ORDER BY lb.totalAmount DESC ")
     public List<LeaderBoardResponse> getAll();
 }

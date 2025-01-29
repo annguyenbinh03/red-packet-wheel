@@ -3,6 +3,7 @@ package com.example.luckydraw.controller;
 import com.example.luckydraw.dto.request.BankingRequest;
 import com.example.luckydraw.dto.request.UserCreationRequest;
 import com.example.luckydraw.dto.response.ApiResponse;
+import com.example.luckydraw.dto.response.PaymentResponse;
 import com.example.luckydraw.dto.response.SpinAndMoneyResponse;
 import com.example.luckydraw.dto.response.UserResponse;
 import com.example.luckydraw.service.UserService;
@@ -35,6 +36,13 @@ public class UserController {
                 .build();
     }
 
+    @PostMapping("/set-received")
+    public ApiResponse<UserResponse> saveBankInfo(@RequestParam String username) {
+        userService.setReceivedMoney(username);
+        return ApiResponse.<UserResponse>builder()
+                .build();
+    }
+
     @GetMapping("/info/my-info")
     public ApiResponse<UserResponse> getUserInfo() {
         return ApiResponse.<UserResponse>builder()
@@ -56,6 +64,20 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping("/info/all")
+    public ApiResponse<List<UserResponse>> getAllUserInfo() {
+        return ApiResponse.<List<UserResponse>>builder()
+                .result(userService.getAllUserInfo())
+                .build();
+    }
+
+    @GetMapping("/info/payment")
+    public ApiResponse<List<PaymentResponse>> getAllPaymentInfo() {
+        return ApiResponse.<List<PaymentResponse>>builder()
+                .result(userService.getAllPaymentInfo())
+                .build();
+    }
+
     @GetMapping("/info/{userId}")
     public ApiResponse<UserResponse> getUserInfo(@PathVariable("userId") String userId) {
         return ApiResponse.<UserResponse>builder()
@@ -63,10 +85,5 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping("/info/all")
-    public ApiResponse<List<UserResponse>> getAllUserInfo() {
-        return ApiResponse.<List<UserResponse>>builder()
-                .result(userService.getAllUserInfo())
-                .build();
-    }
+
 }

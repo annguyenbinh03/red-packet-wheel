@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
-import image20k from ".././assets/image/20k.jpg";
-import image10k from ".././assets/image/10k.jpg";
-import image5k from ".././assets/image/5k.jpg";
-import image2k from ".././assets/image/2k.jpg";
-import image1k from ".././assets/image/1k.jpg";
-import imageJack from ".././assets/image/jack.jpg";
-import imageCaiNit from ".././assets/image/caiNit.png";
+import image20k from ".././assets/image/20k.webp";
+import image10k from ".././assets/image/10k.webp";
+import image5k from ".././assets/image/5k.webp";
+import image2k from ".././assets/image/2k.webp";
+import image1k from ".././assets/image/1k.webp";
+import imageJack from ".././assets/image/jack.webp";
+import imageCaiNit from ".././assets/image/caiNit.webp";
 
 import audioOf3 from "../assets/audio/a3.mp3";
 import audioxoso from "../assets/audio/xoso.mp3";
