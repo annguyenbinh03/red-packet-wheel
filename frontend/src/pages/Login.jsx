@@ -60,7 +60,7 @@ const Login = () => {
 
   if(error !== ""){
     return (
-      <div style={{color:"black"}}>Lỗi rồi {username}, Lỗi rồi {password} </div>
+      <div style={{color:"black", fontSize:"40px"}}> tài khoản truy cập của bạn chưa được cung cấp </div>
     )
   } else {
     return (

@@ -2,7 +2,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import useAuth from "../hooks/useAuth";
 
@@ -21,6 +21,7 @@ const AdminPay = () => {
 
   const { auth } = useAuth();
   const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchPaymentInfo = async () => {
     try {
@@ -80,6 +81,13 @@ const AdminPay = () => {
     }
   };
 
+    const filteredUser = useMemo(() => {
+      if (!searchTerm) return users; // Nếu không có searchTerm, trả về toàn bộ danh sách
+      return users.filter((user) =>
+        user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }, [searchTerm, users]);
+
   return (
     <>
       <div className="container px-3">
@@ -99,6 +107,15 @@ const AdminPay = () => {
             >
               Reload
             </button>
+            <div>
+            <input
+              type="text"
+              placeholder="Tìm kiếm người dùng..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="p-2 border rounded-md w-full my-3"
+            />
+          </div>
           </div>
           <table className="table">
             <thead>
@@ -112,8 +129,8 @@ const AdminPay = () => {
               </tr>
             </thead>
             <tbody>
-              {users?.length > 0 &&
-                users.map((item, index) => {
+              {filteredUser?.length > 0 &&
+                filteredUser.map((item, index) => {
                   return (
                     <tr key={index}>
                       <th scope="row">{index + 1}</th>

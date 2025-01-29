@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
@@ -11,7 +11,6 @@ import { Bounce, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const Admin = () => {
-
   const defaulWebLink = process.env.REACT_APP_WEB_LINK;
 
   const [show, setShow] = useState(false);
@@ -27,6 +26,7 @@ const Admin = () => {
   const { auth } = useAuth();
 
   const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchUsers = async () => {
     try {
@@ -37,6 +37,13 @@ const Admin = () => {
       console.log(error);
     }
   };
+
+  const filteredUser = useMemo(() => {
+    if (!searchTerm) return users; // Nếu không có searchTerm, trả về toàn bộ danh sách
+    return users.filter((user) =>
+      user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm, users]);
 
   useEffect(() => {
     fetchUsers();
@@ -134,6 +141,15 @@ const Admin = () => {
               To payment
             </button>
           </div>
+          <div>
+            <input
+              type="text"
+              placeholder="Tìm kiếm người dùng..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="p-2 border rounded-md w-full my-3"
+            />
+          </div>
         </div>
         <div className="row px-3 mt-3">
           <table className="table">
@@ -150,8 +166,8 @@ const Admin = () => {
               </tr>
             </thead>
             <tbody>
-              {users?.length > 0 &&
-                users.map((item, index) => {
+              {filteredUser?.length > 0 &&
+                filteredUser.map((item, index) => {
                   return (
                     <tr key={index}>
                       <th scope="row">{index + 1}</th>
@@ -167,7 +183,8 @@ const Admin = () => {
                           className="btn btn-primary"
                           onClick={() =>
                             handleClickCopyClipBoard(
-                             defaulWebLink +"/login?nvme=" +
+                              defaulWebLink +
+                                "/login?nvme=" +
                                 item.username +
                                 "&deepseek=" +
                                 item.unPass
@@ -253,7 +270,7 @@ const Admin = () => {
           <div>{clipBoardLink}</div>
 
           <div
-          className="mt-4 w-100 py-5 my-5"
+            className="mt-4 w-100 py-5 my-5"
             style={{
               height: "auto",
               margin: "0 auto",
@@ -262,7 +279,7 @@ const Admin = () => {
             }}
           >
             <QRCode
-              size={"512px"}
+              size={512}
               style={{ height: "auto", maxWidth: "100%", width: "100%" }}
               value={clipBoardLink}
               viewBox={`0 0 512px 512px`}

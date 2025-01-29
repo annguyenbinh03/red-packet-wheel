@@ -120,6 +120,7 @@ export default function Game() {
       const response = await getSpinCount(auth.storagedToken);
       setSpinCount(response.result.spin);
       setTotalPrize(response.result.money);
+      setIsSubmit(response.result.isSubmit);
     } catch (e) {
       console.log(e);
     }
@@ -310,6 +311,7 @@ export default function Game() {
                     whileHover="hover"
                     className="game_content_spin"
                     onClick={goToLeaderboard}
+                    style={{background:"yellow", color:"black"}}
                   >
                     Xem danh sách trúng thưởng
                   </motion.button>

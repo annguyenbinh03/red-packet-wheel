@@ -57,9 +57,7 @@ export default function Winners() {
   const fetchLeaderboards = async () => {
     try {
       const response = await getLeaderboards(auth.storagedToken);
-
-      const testData = [...response.result, ...response.result, ...response.result, ...response.result, ...response.result];
-      setDataUser(testData);
+      setDataUser(response.result);
     } catch (error) {
       console.log(error);
     }
