@@ -9,8 +9,6 @@ import { BsCheck } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 // motion init
 
-
-
 const container = {
   hide: {
     opacity: 0,
@@ -196,11 +194,14 @@ export default function FireWork() {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
       const xuanAudio = document.querySelector(".audio_xuan");
-      xuanAudio.play();
-      noAudio.volume = 0.7;
-      const noAudio = document.querySelector(".no");
-      noAudio.play();
-      noAudio.volume = 0.8;
+      if (xuanAudio !== null) xuanAudio.play();
+
+      if (noAudio !== null) {
+        noAudio.volume = 0.7;
+        const noAudio = document.querySelector(".no");
+        noAudio.play();
+        noAudio.volume = 0.8;
+      }
     });
   }, []);
 
@@ -214,10 +215,12 @@ export default function FireWork() {
   }, 13000);
 
   setTimeout(() => {
+    if(!showModalGame)
     setShowModalGame(true);
   }, 20000);
 
   setTimeout(() => {
+    if(!showModalGame)
     setShowModalGame(true);
   }, 30000);
 
@@ -251,9 +254,16 @@ export default function FireWork() {
         {showTouchScreen && (
           <div
             className="welcome_touchScreen"
-            style={{ color: "white", position: "absolute", textAlign: "center" }}
+            style={{
+              color: "white",
+              position: "absolute",
+              textAlign: "center",
+            }}
           >
-             <motion.div variants={textTouchScreen}> Hãy nhấp vào màn hình</motion.div>
+            <motion.div variants={textTouchScreen}>
+              {" "}
+              Hãy nhấp vào màn hình
+            </motion.div>
           </div>
         )}
 

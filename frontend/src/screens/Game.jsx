@@ -120,7 +120,7 @@ export default function Game() {
       const response = await getSpinCount(auth.storagedToken);
       setSpinCount(response.result.spin);
       setTotalPrize(response.result.money);
-      setIsSubmit(response.result.isSubmit);
+      setIsSubmit(response.result.submitted);
     } catch (e) {
       console.log(e);
     }
@@ -293,7 +293,7 @@ export default function Game() {
                 </motion.button>
               </>
             ) : (
-                isSubmit ? (
+                !isSubmit ? (
                   <div>
                   <motion.button
                     variants={buttonMotion}

@@ -11,13 +11,12 @@ import imageJack from ".././assets/image/jack.webp";
 import imageCaiNit from ".././assets/image/caiNit.webp";
 
 import audioOf3 from "../assets/audio/a3.mp3";
-import audioxoso from "../assets/audio/xoso.mp3";
 import audiocainit from "../assets/audio/cainit.mp3";
 import audiovit from "../assets/audio/vit.mp3";
 import audiovotay from "../assets/audio/votay.mp3";
 import audioJack from "../assets/audio/jack.mp3";
-import audioditmecuocdoi from "../assets/audio/ditmecuocdoi.mp3"
-import audionhanhahanhphucdonxuanvuasang from "../assets/audio/nhanhahanhphucdonxuanvuasang.mp3"
+import audioditmecuocdoi from "../assets/audio/ditmecuocdoi.mp3";
+import audionhanhahanhphucdonxuanvuasang from "../assets/audio/nhanhahanhphucdonxuanvuasang.mp3";
 
 const overlay = {
   hide: {
@@ -84,13 +83,16 @@ export default function Prize({ back, prize }) {
 
     if (selectedAudio) {
       setAudio(selectedAudio); // Cập nhật audio state
-      if (ref.current) {
-        ref.current.load();
-        ref.current.play();
-      }
     }
   }, [prize]);
 
+  useEffect(() => {
+    if (audio && ref.current) {
+      ref.current.src = audio;
+      ref.current.load();
+      ref.current.play();
+    }
+  }, [prize]);
 
   const ref = useRef();
 
@@ -177,8 +179,13 @@ export default function Prize({ back, prize }) {
             <p>Bạn nhận được một phần quà</p>
             {/* <p style={{ color: "red", fontWeight: "bold" }}>{prize}</p> */}
             {showPrizeImage(prize)}
-            <div style={{display:"flex", justifyContent:"center"}} className="prize_content_buttons">
-              <button style={{maxWidth:"250px"}} onClick={goback}>Quay tiếp</button>
+            <div
+              style={{ display: "flex", justifyContent: "center" }}
+              className="prize_content_buttons"
+            >
+              <button style={{ maxWidth: "250px" }} onClick={goback}>
+                Quay tiếp
+              </button>
             </div>
           </motion.div>
         </motion.div>
