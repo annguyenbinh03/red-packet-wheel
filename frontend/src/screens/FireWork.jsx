@@ -196,9 +196,9 @@ export default function FireWork() {
       const xuanAudio = document.querySelector(".audio_xuan");
       if (xuanAudio !== null) xuanAudio.play();
 
+      const noAudio = document.querySelector(".no");
       if (noAudio !== null) {
         noAudio.volume = 0.7;
-        const noAudio = document.querySelector(".no");
         noAudio.play();
         noAudio.volume = 0.8;
       }
@@ -208,21 +208,21 @@ export default function FireWork() {
   setTimeout(() => {
     setShowTouchScreen(false);
     setTimeShowText(true);
-  }, 6000);
+  }, 5000);
 
   setTimeout(() => {
     setShowModalGame(true);
-  }, 13000);
-
-  setTimeout(() => {
-    if(!showModalGame)
-    setShowModalGame(true);
-  }, 20000);
+  }, 11000);
 
   setTimeout(() => {
     if(!showModalGame)
     setShowModalGame(true);
-  }, 30000);
+  }, 17000);
+
+  setTimeout(() => {
+    if(!showModalGame)
+    setShowModalGame(true);
+  }, 25000);
 
   // modal box small showing when watching video
 

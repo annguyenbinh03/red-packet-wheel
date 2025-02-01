@@ -10,14 +10,6 @@ import image1k from ".././assets/image/1k.webp";
 import imageJack from ".././assets/image/jack.webp";
 import imageCaiNit from ".././assets/image/caiNit.webp";
 
-import audioOf3 from "../assets/audio/a3.mp3";
-import audiocainit from "../assets/audio/cainit.mp3";
-import audiovit from "../assets/audio/vit.mp3";
-import audiovotay from "../assets/audio/votay.mp3";
-import audioJack from "../assets/audio/jack.mp3";
-import audioditmecuocdoi from "../assets/audio/ditmecuocdoi.mp3";
-import audionhanhahanhphucdonxuanvuasang from "../assets/audio/nhanhahanhphucdonxuanvuasang.mp3";
-
 const overlay = {
   hide: {
     opacity: 0,
@@ -26,8 +18,8 @@ const overlay = {
   visible: {
     opacity: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
-    transtion: {
-      delay: 0.5,
+    transition: {
+      delay: 0.1,
       duration: 1,
       when: "beforeChildren",
     },
@@ -41,20 +33,30 @@ const box = {
 
   visible: {
     y: 0,
-    transtion: {
-      delay: 1,
+    transition: {
+      delay: 0.1,
     },
   },
 };
 
-export default function Prize({ back, prize }) {
-  const [audio, setAudio] = useState();
+export default function Prize({
+  back,
+  prize,
+  audioOf3,
+  audiocainit,
+  audiovit,
+  audiovotay,
+  audioJack,
+  audiofail,
+  audionhanhahanhphucdonxuanvuasang,
+}) {
 
-  let selectedAudio;
   useEffect(() => {
+    let selectedAudio = null;
+
     switch (prize) {
       case "1.000":
-        selectedAudio = audioditmecuocdoi;
+        selectedAudio = audiofail;
         break;
       case "2.000":
         selectedAudio = audioOf3;
@@ -78,23 +80,16 @@ export default function Prize({ back, prize }) {
         selectedAudio = audiocainit;
         break;
       default:
-        selectedAudio = null; // Không phát nhạc nếu không khớp prize nào
+        selectedAudio = null;
     }
 
+    const prizeAudio = document.querySelector(".prize_audio");
     if (selectedAudio) {
-      setAudio(selectedAudio); // Cập nhật audio state
+      prizeAudio.src = selectedAudio;
+      prizeAudio.play();
     }
-  }, [prize]);
-
-  useEffect(() => {
-    if (audio && ref.current) {
-      ref.current.src = audio;
-      ref.current.load();
-      ref.current.play();
-    }
-  }, [prize]);
-
-  const ref = useRef();
+    
+  }, []);
 
   const goback = () => {
     back(false);
@@ -155,8 +150,8 @@ export default function Prize({ back, prize }) {
 
   return (
     <>
-      <audio className="game_audio" ref={ref}>
-        <source src={audio} type="audio/mp3" />
+      <audio className="prize_audio">
+        {/* <source src={audio} /> */}
       </audio>
       <AnimatePresence>
         <motion.div

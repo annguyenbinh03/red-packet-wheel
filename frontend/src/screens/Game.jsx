@@ -14,6 +14,14 @@ import { Wheel } from "react-custom-roulette";
 // import audio
 import audioxoso from "../assets/audio/xoso.mp3";
 import Prize from "../components/Prize";
+import audioOf3 from "../assets/audio/a3.mp3";
+import audiocainit from "../assets/audio/cainit.mp3";
+import audiovit from "../assets/audio/vit.mp3";
+import audiovotay from "../assets/audio/votay.mp3";
+import audioJack from "../assets/audio/jack.mp3";
+import audiofail from "../assets/audio/fail.mp3"
+import audionhanhahanhphucdonxuanvuasang from "../assets/audio/nhanhahanhphucdonxuanvuasang.mp3";
+
 import Loading from "../components/Loading";
 
 const buttonMotion = {
@@ -208,12 +216,11 @@ export default function Game() {
     ref.current.pause();
     setModalPrize(true);
 
+    setShowPrize(data[prizeNumber].option);
     setSpinCount((prevSpinCount) => {
       handleAddAmount(prevSpinCount); 
       return prevSpinCount - 1; 
     });
-
-    setShowPrize(data[prizeNumber].option);
   };
 
   // func back when modal prize show
@@ -325,7 +332,11 @@ export default function Game() {
         )}
       </div>
       {/* when spin stop => show prize component */}
-      {modalPrize && <Prize back={back} prize={showPrize} />}
+      {modalPrize && <Prize back={back} prize={showPrize}
+        audioOf3={audioOf3} audiocainit={audiocainit} audiovit={audiovit} audioJack={audioJack}
+        audiofail={audiofail} audionhanhahanhphucdonxuanvuasang={audionhanhahanhphucdonxuanvuasang}
+        audiovotay={audiovotay}
+      />}
     </motion.div>
   );
 }
